@@ -1,0 +1,64 @@
+
+
+Book::create([
+        'title' => 'Sistem Informasi Manajemen',
+        'slug' => 'sistem_informasi',
+        'cover' => 'si.jpg',
+        'pages' => 412,
+        'publish_year' => '2015',
+        'author_id' => '1'
+
+])
+
+
+Book::create([
+        
+        'title' => 'Learn PHP & MySQL',
+        'slug' => 'php_mysql',
+        'cover' => 'php_mysql.jpg',
+        'pages' => 642,
+        'publish_year' => '2017',
+        'author_id' => '1',
+])
+
+Book::create([
+        
+        'title' => 'Learning AI',
+        'slug' => 'learn_ai',
+        'cover' => 'ai.jpg',
+        'pages' => 812,
+        'publish_year' => '2017',
+        'author_id' => '2',
+])
+
+Author::create([
+        'slug' => 'ryan_kenidy',
+        'firstname' => 'Ryan',
+        'lastname' => 'Kenidy',
+        'image' => ''
+])
+
+
+Author::create([
+    'slug' => 'lia_natasya',
+    'firstname' => 'Lia',
+    'lastname' => 'Natasya',
+    'image' => ''
+    
+])
+
+
+
+Author::create([
+    'slug' => 'jesselia',
+    'firstname' => 'jesselia',
+    'lastname' => '',
+    'image' => ''
+    
+])
+
+Publisher::create([
+        'slug' =>
+])
+     
+     
