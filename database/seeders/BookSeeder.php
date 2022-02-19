@@ -18,7 +18,7 @@ class BookSeeder extends Seeder
 
             'title' => 'Learning AI',
             'slug' => 'learn_ai',
-            'cover' => 'ai.jpg',
+            'cover' => 'book-images/ai.jpg',
             'pages' => 812,
             'publish_year' => '2017',
             'author_id' => 2,
@@ -28,7 +28,7 @@ class BookSeeder extends Seeder
 
         Book::create([
             'title' => 'Sistem Informasi Manajemen',
-            'slug' => 'sistem_informasi',
+            'slug' => 'book-images/sistem_informasi',
             'cover' => 'si.jpg',
             'pages' => 412,
             'publish_year' => '2015',
@@ -42,7 +42,7 @@ class BookSeeder extends Seeder
 
             'title' => 'Learn PHP & MySQL',
             'slug' => 'php_mysql',
-            'cover' => 'php_mysql.jpg',
+            'cover' => 'book-images/php_mysql.jpg',
             'pages' => 642,
             'publish_year' => '2017',
             'author_id' => 3,

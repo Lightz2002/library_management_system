@@ -1,3 +1,4 @@
+{{-- @dd($books) --}}
 
 @extends('layouts.admin')
 
@@ -10,8 +11,7 @@
     @if($books->count())
         <table class="bg-white table table-auto border-2 border-collapse w-full">
             <thead class="border-2 border-collapse text-left font-bold">
-                <th class="p-4">No.</th>
-                <th class="p-4">Image</th>
+                <th class="p-4  ">Image</th>
                 <th class="p-4">Title</th>
                 <th class="p-4">Pages</th>
                 <th class="p-4">Author</th>
@@ -20,15 +20,14 @@
                 <th class="p-4">Actions</th>
             </thead>
             <tbody>
-
+               
                 @foreach ($books as $book)
+                  
                     <tr class="border-2 border-collapse">
-                        <td class="p-4">
-                            {{ $loop->iteration }}
-                        </td>
-                        <td class="p-4">
-                            <img src="/image/{{ $book->cover }}" alt="{{ $book->title }}" width="100">
-            
+                       
+                        <td class="p-4 ">
+                            <img src="/storage/{{ $book->cover }}" alt="{{ $book->title }}" width="100">
+
                         </td>
                         <td class="p-4">{{ $book->pages }}</td>
                         <td class="p-4">{{ $book->title }}</td>
@@ -38,7 +37,6 @@
                         <td class="p-4">
                             <div class="button-container flex  flex-col ">
                                 <a href="/dashboard/books/{{ $book->slug }}" class="bg-orange-500 mb-4 text-white p-4 flex content-center text-sm">
-                                    {{-- <a href=""></a> --}}
                                     <i class="fi fi-rr-pencil mr-3"></i> 
                                     <span>Update</span>
                                 </a>
@@ -59,7 +57,7 @@
             {{ $books->links() }}
         </div>
 
-        <x-modal title="Create New Book" action="/dashboard/books" method="POST">
+        <x-modal enctype="multipart/form-data" title="Create New Book" action="/dashboard/books" method="POST">
             <x-form.input name="title" type="text" title="Title">
             </x-form.input>
 
@@ -86,6 +84,10 @@
                  <select name="publisher" id="publisher" class="px-2 border-2 border-gray-200">
                     
                 </select>
+            </x-form.input>
+
+            <x-form.input name="cover" type="file" title="Cover" class="col-span-2">
+
             </x-form.input>
         
 

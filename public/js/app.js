@@ -2130,14 +2130,49 @@ jQuery__WEBPACK_IMPORTED_MODULE_0___default().when((jQuery__WEBPACK_IMPORTED_MOD
   });
   jQuery__WEBPACK_IMPORTED_MODULE_0___default()(".form").on("submit", function (e) {
     e.preventDefault();
+    var fd = new FormData(this);
+    fd.append("cover", jQuery__WEBPACK_IMPORTED_MODULE_0___default()("#cover")[0].files[0]);
+    fd.append("title", jQuery__WEBPACK_IMPORTED_MODULE_0___default()("#title").val());
+    fd.append("author", jQuery__WEBPACK_IMPORTED_MODULE_0___default()("#author").val());
+    fd.append("publisher", jQuery__WEBPACK_IMPORTED_MODULE_0___default()("#publisher").val());
+    fd.append("pages", jQuery__WEBPACK_IMPORTED_MODULE_0___default()("#pages").val());
+    fd.append("publish_year", jQuery__WEBPACK_IMPORTED_MODULE_0___default()("#publish_year").val());
+    fd.append("slug", jQuery__WEBPACK_IMPORTED_MODULE_0___default()("#slug").val());
     jQuery__WEBPACK_IMPORTED_MODULE_0___default().ajax({
       url: "/dashboard/books",
       method: "POST",
-      data: jQuery__WEBPACK_IMPORTED_MODULE_0___default()(".form").serialize()
-    }).done(function (data) {
-      console.log(data.json());
-    }).fail(function (err) {
-      console.log(err);
+      data: fd,
+      contentType: false,
+      processData: false,
+      headers: {
+        "X-CSRF-TOKEN": jQuery__WEBPACK_IMPORTED_MODULE_0___default()('meta[name="csrf-token"]').attr("content")
+      }
+    }).done(function (res) {
+      if (res.status === 200) {
+        jQuery__WEBPACK_IMPORTED_MODULE_0___default()(".modal").addClass("hidden");
+        jQuery__WEBPACK_IMPORTED_MODULE_0___default()(".btn-create-book").before("\n                    <div class=\"alert bg-green-100 text-green-600 font-bold px-4 py-2 mb-4\">\n                        ".concat(res.message, "\n                    </div>\n                    "));
+        jQuery__WEBPACK_IMPORTED_MODULE_0___default()(".form")[0].reset();
+        setTimeout(function () {
+          jQuery__WEBPACK_IMPORTED_MODULE_0___default()(".alert").remove();
+        }, 3000);
+      }
+    }).fail(function (res) {
+      if (res.status === 422) {
+        jQuery__WEBPACK_IMPORTED_MODULE_0___default()("small.text-red-600").remove();
+        jQuery__WEBPACK_IMPORTED_MODULE_0___default()("input.border-red-500").removeClass("border-red-500");
+        var errors = res.responseJSON.errors;
+
+        var _loop = function _loop(error) {
+          errors[error].forEach(function (message) {
+            jQuery__WEBPACK_IMPORTED_MODULE_0___default()("input[name=".concat(error, "]")).addClass("border-red-500");
+            jQuery__WEBPACK_IMPORTED_MODULE_0___default()("input[name=".concat(error, "]")).after("<small class=\"text-red-600\">".concat(message, "</small>"));
+          });
+        };
+
+        for (var error in errors) {
+          _loop(error);
+        }
+      }
     });
   });
 });

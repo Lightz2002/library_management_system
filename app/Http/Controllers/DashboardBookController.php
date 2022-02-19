@@ -6,6 +6,7 @@ use App\Models\Book;
 use App\Models\Author;
 use App\Models\Publisher;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 use Cviebrock\EloquentSluggable\Services\SlugService;
 
 class DashboardBookController extends Controller
@@ -20,7 +21,7 @@ class DashboardBookController extends Controller
         //
         return view('pages.dashboard.books', [
             'title' => 'Books',
-            'books' => Book::with('publisher')->paginate(1)
+            'books' => Book::with('publisher')->paginate(2)
         ]);
     }
 
@@ -46,14 +47,44 @@ class DashboardBookController extends Controller
      */
     public function store(Request $request)
     {
-        $validatedData = $request->validate([
+
+        $validator = Validator::make($request->all(), [
             'title' => 'required',
             'slug' => 'required|unique:books',
-            'pages' => 'required|digits',
-            'publish_year' => 'date_format:Y'
+            'pages' => 'required',
+            'publish_year' => 'date_format:Y',
+            'cover' => 'image|file|max:512'
+        ], $messages  = [
+            'date_format' => 'The :attribute field must be in year.'
         ]);
 
-        return $request;
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => 422,
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        if ($request->hasFile('cover')) {
+
+            $cover = $request->file('cover')->store('book-images');
+        }
+
+        $book = new Book();
+        $book->author_id = $request->author;
+        $book->title = $request->title;
+        $book->publish_year = $request->publish_year;
+        $book->pages = $request->pages;
+        $book->publisher_id = $request->publisher;
+        $book->slug = $request->slug;
+        $book->cover = $cover;
+
+        $book->save();
+
+        return response()->json([
+            'status' => 200,
+            'message' => 'Books Created Successfully'
+        ]);
     }
 
     /**

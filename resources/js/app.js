@@ -47,16 +47,62 @@ $.when($.ready).then(function () {
     $(".form").on("submit", function (e) {
         e.preventDefault();
 
+        let fd = new FormData(this);
+
+        fd.append("cover", $("#cover")[0].files[0]);
+        fd.append("title", $("#title").val());
+        fd.append("author", $("#author").val());
+        fd.append("publisher", $("#publisher").val());
+        fd.append("pages", $("#pages").val());
+        fd.append("publish_year", $("#publish_year").val());
+        fd.append("slug", $("#slug").val());
+
         $.ajax({
             url: "/dashboard/books",
             method: "POST",
-            data: $(".form").serialize(),
+            data: fd,
+            contentType: false,
+            processData: false,
+            headers: {
+                "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
+            },
         })
-            .done(function (data) {
-                console.log(data.json());
+            .done(function (res) {
+                if (res.status === 200) {
+                    $(".modal").addClass("hidden");
+
+                    $(".btn-create-book").before(`
+                    <div class="alert bg-green-100 text-green-600 font-bold px-4 py-2 mb-4">
+                        ${res.message}
+                    </div>
+                    `);
+
+                    $(".form")[0].reset();
+
+                    setTimeout(() => {
+                        $(".alert").remove();
+                    }, 3000);
+                }
             })
-            .fail(function (err) {
-                console.log(err);
+            .fail(function (res) {
+                if (res.status === 422) {
+                    $("small.text-red-600").remove();
+                    $("input.border-red-500").removeClass("border-red-500");
+
+                    let { errors } = res.responseJSON;
+
+                    for (let error in errors) {
+                        errors[error].forEach((message) => {
+                            $(`input[name=${error}]`).addClass(
+                                "border-red-500"
+                            );
+
+                            $(`input[name=${error}]`).after(
+                                `<small class="text-red-600">${message}</small>`
+                            );
+                        });
+                    }
+                }
             });
     });
 });
