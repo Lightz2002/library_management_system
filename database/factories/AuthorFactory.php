@@ -17,7 +17,7 @@ class AuthorFactory extends Factory
             'firstname' => $this->faker->firstname(),
             'slug' => $this->faker->unique()->slug(2, false),
             'lastname' => $this->faker->lastname(),
-            'image' => $this->faker->randomElement(['john doe.png', 'john doe 2.png'])
+            'image' => $this->faker->randomElement(['image/john doe.png', 'image/john doe 2.png'])
         ];
     }
 }
