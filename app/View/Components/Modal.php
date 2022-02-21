@@ -7,10 +7,6 @@ use Illuminate\View\Component;
 class Modal extends Component
 {
 
-    public $method;
-    public $action;
-    public $title;
-    public $enctype;
 
 
     /**
@@ -18,13 +14,8 @@ class Modal extends Component
      *
      * @return void
      */
-    public function __construct($action, $method, $title, $enctype = 'application/x-www-form-urlencoded	')
+    public function __construct()
     {
-        //
-        $this->action = $action;
-        $this->method = $method;
-        $this->title = $title;
-        $this->enctype = $enctype;
     }
 
     /**

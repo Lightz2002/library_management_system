@@ -6,7 +6,10 @@ use App\Models\Book;
 use App\Models\Author;
 use App\Models\Publisher;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
+use Clockwork\Storage\Storage as ClockworkStorage;
 use Cviebrock\EloquentSluggable\Services\SlugService;
 
 class DashboardBookController extends Controller
@@ -32,6 +35,7 @@ class DashboardBookController extends Controller
      */
     public function create()
     {
+
         return response()->json([
             'status' => 200,
             'authors' => Author::all(),
@@ -65,6 +69,7 @@ class DashboardBookController extends Controller
             ], 422);
         }
 
+
         if ($request->hasFile('cover')) {
 
             $cover = $request->file('cover')->store('book-images');
@@ -83,7 +88,7 @@ class DashboardBookController extends Controller
 
         return response()->json([
             'status' => 200,
-            'message' => 'Books Created Successfully'
+            'message' => 'Book created succesfully ! '
         ]);
     }
 
@@ -106,7 +111,10 @@ class DashboardBookController extends Controller
      */
     public function edit(Book $book)
     {
-        //
+        return response()->json([
+            'status' => 200,
+            'book' => Book::find($book->id)
+        ]);
     }
 
     /**
@@ -118,7 +126,53 @@ class DashboardBookController extends Controller
      */
     public function update(Request $request, Book $book)
     {
-        //
+
+
+        $validator = Validator::make($request->all(), [
+            'title' => 'required',
+            'slug' => [
+                'required',
+                Rule::unique('books', 'slug')->ignore($book->id)
+            ],
+            'pages' => 'required',
+            'publish_year' => 'date_format:Y',
+        ], $messages  = [
+            'date_format' => 'The :attribute field must be in year.'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => 422,
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+
+        if ($request->hasFile('cover')) {
+            $path = $book->cover;
+            if (Storage::exists($path)) {
+                Storage::delete($path);
+            }
+            $cover = $request->file('cover')->store('book-images');
+        } else {
+            $cover = $book->cover;
+        }
+
+        $book = Book::find($book->id);
+        $book->author_id = $request->author;
+        $book->title = $request->title;
+        $book->publish_year = $request->publish_year;
+        $book->pages = $request->pages;
+        $book->publisher_id = $request->publisher;
+        $book->slug = $request->slug;
+        $book->cover = $cover;
+
+        $book->save();
+
+        return response()->json([
+            'status' => 200,
+            'message' => 'Book Updated succesfully ! '
+        ]);
     }
 
     /**
@@ -129,7 +183,18 @@ class DashboardBookController extends Controller
      */
     public function destroy(Book $book)
     {
-        //
+
+        if ($book->cover) {
+            Storage::delete($book->cover);
+        }
+
+        Book::destroy($book->id);
+
+        return response()->json([
+            'status' => 200,
+            'book' => $book,
+            'message' => 'The book is deleted successfully !'
+        ]);
     }
 
     public function createSlug(Request $request)

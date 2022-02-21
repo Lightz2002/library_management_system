@@ -35,17 +35,18 @@
                         <td class="p-4">{{ $book->publish_year }}</td>
                         <td class="p-4">{{ $book->publisher->name }}</td>
                         <td class="p-4">
-                            <div class="button-container flex  flex-col ">
-                                <a href="/dashboard/books/{{ $book->slug }}" class="bg-orange-500 mb-4 text-white p-4 flex content-center text-sm">
+                            <div class="button-container flex flex-1 flex-col ">
+                                
+                                <button data-slug="{{ $book->slug }}" class="btn-update-book bg-orange-500 text-white p-4 flex content-center text-sm w-full hover:bg-orange-600 focus:bg-orange-700 mb-3">
                                     <i class="fi fi-rr-pencil mr-3"></i> 
-                                    <span>Update</span>
-                                </a>
-                                <a href="/dashboard/books/{{ $book->slug }}" class="bg-red-500 text-white p-4 flex content-center text-sm">
+                                    Update
+                                </button>
+
+                                <button data-slug="{{ $book->slug }}" class="btn-delete-book bg-red-500 text-white p-4 flex content-center text-sm w-full hover:bg-red-600 focus:bg-red-700">
                                     <i class="fi fi-rr-trash mr-3"></i>
-                                    <span>
-                                        Delete
-                                    </span>
-                                </a>
+                                    Delete
+                                </button>
+                            
                             </div>
                         </td>
                     </tr>
@@ -57,41 +58,100 @@
             {{ $books->links() }}
         </div>
 
-        <x-modal enctype="multipart/form-data" title="Create New Book" action="/dashboard/books" method="POST">
-            <x-form.input name="title" type="text" title="Title">
-            </x-form.input>
+        <x-modal class="create__modal">
 
-            <x-form.input name="slug" type="text" title="Slug" >
-            </x-form.input>
-
+            <x-modal-form enctype="multipart/form-data" title="Create New Book" action="/dashboard/books" method="POST" class="create-book-form">
             
-            <x-form.input name="pages" type="text" title="Pages">
-            </x-form.input>
-
-            
-            <x-form.input name="publish_year" type="text" title="Publish Year">
-            </x-form.input>
-
+                <x-form.input name="title" type="text" title="Title">
+                </x-form.input>
+    
+                <x-form.input name="slug" type="text" title="Slug" >
+                </x-form.input>
+    
+                
+                <x-form.input name="pages" type="text" title="Pages">
+                </x-form.input>
+    
+                
+                <x-form.input name="publish_year" type="text" title="Publish Year">
+                </x-form.input>
+    
+                     
+                <x-form.input name="author" type="select" title="Author">
+                    <select name="author" id="author" class="px-2 border-2 border-gray-200">
+    
+                    </select>
+                </x-form.input>
+                
                  
-            <x-form.input name="author" type="select" title="Author">
-                <select name="author" id="author" class="px-2 border-2 border-gray-200">
-
-                </select>
-            </x-form.input>
+                <x-form.input name="publisher" type="select" title="Publisher">
+                     <select name="publisher" id="publisher" class="px-2 border-2 border-gray-200">
+                        
+                    </select>
+                </x-form.input>
+    
+                <x-form.input name="cover" type="file" title="Cover" class="col-span-2">
+    
+                </x-form.input>
             
-             
-            <x-form.input name="publisher" type="select" title="Publisher">
-                 <select name="publisher" id="publisher" class="px-2 border-2 border-gray-200">
-                    
-                </select>
-            </x-form.input>
-
-            <x-form.input name="cover" type="file" title="Cover" class="col-span-2">
-
-            </x-form.input>
+                <button class="col-span-2 mt-3 py-2 px-4 bg-blue-600 text-white">Submit</button>
+                
+            </x-modal-form>
+    
+        </x-modal>
         
-
+        <x-modal class="delete__modal">
+            <x-modal-form  title="Delete Book" action="/dashboard/books/{{ $book->slug }}" method="POST" class="delete-book-form leading-5 text-center" showHeader="false">
+                <h3 class="text-3xl font-bold text-red-600 mb-3">Do you want to delete this book?</h3>
+                <p class="text-md">The deleted book can't be restored !</p>
+                <div class="btn-container m-auto mt-5">
+                    <button type="submit" class="btn-submit bg-red-100 text-red-600 px-4 py-2 mr-3 hover:bg-red-200 focus:bg-red-300">Delete</button>
+                    <button type="button" class="btn-cancel border border-gray-600 text-gray-600 px-4 py-2 hover:bg-gray-200 focus:bg-gray-300">Cancel</button>
+                </div>
+            </x-modal-form>
         </x-modal>
 
+        
+        <x-modal class="update__modal">
+            <x-modal-form enctype="multipart/form-data" title="Update Book" action="/dashboard/books/{{ $book->slug }}" method="POST" class="update-book-form">
+                
+                <x-form.input name="title" type="text" title="Title">
+                </x-form.input>
+    
+                <x-form.input name="slug" type="text" title="Slug" >
+                </x-form.input>
+    
+                
+                <x-form.input name="pages" type="text" title="Pages">
+                </x-form.input>
+    
+                
+                <x-form.input name="publish_year" type="text" title="Publish Year">
+                </x-form.input>
+    
+                     
+                <x-form.input name="author" type="select" title="Author">
+                    <select name="author" id="author" class="px-2 border-2 border-gray-200">
+    
+                    </select>
+                </x-form.input>
+                
+                 
+                <x-form.input name="publisher" type="select" title="Publisher">
+                     <select name="publisher" id="publisher" class="px-2 border-2 border-gray-200">
+                        
+                    </select>
+                </x-form.input>
+                
+
+                <x-form.input name="cover" type="file" title="Cover" class="col-span-2">
+    
+                </x-form.input>
+
+                <button class="col-span-2 mt-3 py-2 px-4 bg-blue-600 text-white">Submit</button>
+
+            </x-modal-form>
+        </x-modal>
+        
     @endif
 @endsection

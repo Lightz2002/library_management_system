@@ -49,21 +49,23 @@ Route::middleware(['auth'])->group(function () {
         ]);
     });
 
-    Route::get('/dashboard/books/createSlug', [DashboardBookController::class, 'createSlug']);
-
     Route::resource('/dashboard/books', DashboardBookController::class);
+    Route::get('/dashboard/books/createSlug', [DashboardBookController::class, 'createSlug']);
+    Route::post('dashboard/books/{book:slug}', [DashboardBookController::class, 'update']);
+
+    Route::get('/dashboard/authors', function () {
+        return view('pages.user.authors', [
+            'title' => 'Authors',
+            'authors' => Author::all()
+        ]);
+    });
 });
 
 /* User */
 Route::get('/books', [BookController::class, 'index']);
 Route::get('/books/{book:slug}', [BookController::class, 'show']);
 
-Route::get('/authors', function () {
-    return view('pages.user.authors', [
-        'title' => 'Authors',
-        'authors' => Author::all()
-    ]);
-});
+
 
 Route::get('/publishers', function () {
     return view('pages.user.publishers', [

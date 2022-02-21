@@ -2,9 +2,9 @@
     <label for="{{ $name }}" class="mb-3">{{ $title }}</label>
     @if($type !== 'select') 
     <input type="{{ $type }}" name="{{ $name }}" id="{{ $name }}" class="px-2 border-2 border-gray-200" >
+    {{ $slot }}
     @else
     {{ $slot }}
     @endif
 
- 
 </div>

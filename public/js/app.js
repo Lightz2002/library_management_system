@@ -2074,14 +2074,16 @@ __webpack_require__(/*! ./bootstrap */ "./resources/js/bootstrap.js");
 
 
 jQuery__WEBPACK_IMPORTED_MODULE_0___default().when((jQuery__WEBPACK_IMPORTED_MODULE_0___default().ready)).then(function () {
-  function showModal() {
-    jQuery__WEBPACK_IMPORTED_MODULE_0___default()(".modal").removeClass("hidden");
-    jQuery__WEBPACK_IMPORTED_MODULE_0___default()(".modal").addClass("flex");
+  function showModal(cl) {
+    jQuery__WEBPACK_IMPORTED_MODULE_0___default()(cl).removeClass("hidden");
+    jQuery__WEBPACK_IMPORTED_MODULE_0___default()(cl).addClass("flex");
   }
 
-  function closeModal() {
-    jQuery__WEBPACK_IMPORTED_MODULE_0___default()(".modal").addClass("hidden");
+  function closeModal(cl) {
+    jQuery__WEBPACK_IMPORTED_MODULE_0___default()(cl).addClass("hidden");
   }
+  /* Generate Slug */
+
 
   jQuery__WEBPACK_IMPORTED_MODULE_0___default()("#title").on("change", function () {
     fetch("/dashboard/books/createSlug?title=" + jQuery__WEBPACK_IMPORTED_MODULE_0___default()("#title").val()).then(function (res) {
@@ -2090,12 +2092,14 @@ jQuery__WEBPACK_IMPORTED_MODULE_0___default().when((jQuery__WEBPACK_IMPORTED_MOD
       return jQuery__WEBPACK_IMPORTED_MODULE_0___default()("#slug").val(data.slug);
     });
   });
-  jQuery__WEBPACK_IMPORTED_MODULE_0___default()(".btn-create-book").on("click", function () {
-    showModal();
+  jQuery__WEBPACK_IMPORTED_MODULE_0___default()(".btn-create-book").on("click", function (e) {
+    showModal(".create__modal");
   });
   jQuery__WEBPACK_IMPORTED_MODULE_0___default()(".modal, .modal__btn-close").on("click", function (e) {
     if (!e.target.classList.contains("close")) return;
-    closeModal();
+    closeModal(".create__modal");
+    closeModal(".update__modal");
+    closeModal(".delete__modal");
   });
   jQuery__WEBPACK_IMPORTED_MODULE_0___default().ajax("/dashboard/books/create").done(function (res) {
     var _iterator = _createForOfIteratorHelper(res.authors),
@@ -2104,7 +2108,7 @@ jQuery__WEBPACK_IMPORTED_MODULE_0___default().when((jQuery__WEBPACK_IMPORTED_MOD
     try {
       for (_iterator.s(); !(_step = _iterator.n()).done;) {
         var authors = _step.value;
-        jQuery__WEBPACK_IMPORTED_MODULE_0___default()("#author").append("<option value='".concat(authors.id, "'>").concat(authors.firstname, "</option>"));
+        jQuery__WEBPACK_IMPORTED_MODULE_0___default()("#author, .update-book-from #author").append("<option value='".concat(authors.id, "'>").concat(authors.firstname, "</option>"));
       }
     } catch (err) {
       _iterator.e(err);
@@ -2118,7 +2122,7 @@ jQuery__WEBPACK_IMPORTED_MODULE_0___default().when((jQuery__WEBPACK_IMPORTED_MOD
     try {
       for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
         var publishers = _step2.value;
-        jQuery__WEBPACK_IMPORTED_MODULE_0___default()("#publisher").append("<option value='".concat(publishers.id, "'>").concat(publishers.name, "</option>"));
+        jQuery__WEBPACK_IMPORTED_MODULE_0___default()("#publisher , .update-book-from #publisher").append("<option value='".concat(publishers.id, "'>").concat(publishers.name, "</option>"));
       }
     } catch (err) {
       _iterator2.e(err);
@@ -2128,9 +2132,9 @@ jQuery__WEBPACK_IMPORTED_MODULE_0___default().when((jQuery__WEBPACK_IMPORTED_MOD
   }).fail(function (res) {
     alert(res);
   });
-  jQuery__WEBPACK_IMPORTED_MODULE_0___default()(".form").on("submit", function (e) {
+  jQuery__WEBPACK_IMPORTED_MODULE_0___default()(".create-book-form").on("submit", function (e) {
     e.preventDefault();
-    var fd = new FormData(this);
+    var fd = new FormData();
     fd.append("cover", jQuery__WEBPACK_IMPORTED_MODULE_0___default()("#cover")[0].files[0]);
     fd.append("title", jQuery__WEBPACK_IMPORTED_MODULE_0___default()("#title").val());
     fd.append("author", jQuery__WEBPACK_IMPORTED_MODULE_0___default()("#author").val());
@@ -2173,6 +2177,107 @@ jQuery__WEBPACK_IMPORTED_MODULE_0___default().when((jQuery__WEBPACK_IMPORTED_MOD
           _loop(error);
         }
       }
+    });
+  });
+  jQuery__WEBPACK_IMPORTED_MODULE_0___default()(".btn-delete-book").on("click", function (e) {
+    e.preventDefault();
+    showModal(".delete__modal");
+    var btnDelete = e.currentTarget;
+    jQuery__WEBPACK_IMPORTED_MODULE_0___default()(".btn-cancel").on("click", function () {
+      closeModal(".delete__modal");
+    });
+    jQuery__WEBPACK_IMPORTED_MODULE_0___default()(".delete-book-form").on("submit", function (e) {
+      e.preventDefault();
+      var slug = btnDelete.dataset.slug;
+      jQuery__WEBPACK_IMPORTED_MODULE_0___default().ajax({
+        url: "/dashboard/books/".concat(slug),
+        method: "DELETE",
+        headers: {
+          "X-CSRF-TOKEN": jQuery__WEBPACK_IMPORTED_MODULE_0___default()('meta[name="csrf-token"]').attr("content")
+        }
+      }).done(function (res) {
+        if (res.status === 200) {
+          jQuery__WEBPACK_IMPORTED_MODULE_0___default()(".btn-create-book").before("\n                        <div class=\"alert bg-green-100 text-green-600 font-bold px-4 py-2 mb-4\">\n                            ".concat(res.message, "\n                        </div>\n                        "));
+          closeModal(".delete__modal");
+          btnDelete.closest("tr").remove();
+        }
+      }).fail(function (data) {
+        console.log(data);
+      });
+    });
+  });
+  jQuery__WEBPACK_IMPORTED_MODULE_0___default()(".btn-update-book").on("click", function (e) {
+    e.preventDefault();
+    var slug = e.currentTarget.dataset.slug;
+    showModal(".update__modal");
+    jQuery__WEBPACK_IMPORTED_MODULE_0___default().ajax({
+      url: "/dashboard/books/".concat(slug, "/edit"),
+      method: "get",
+      headers: {
+        "X-CSRF-TOKEN": jQuery__WEBPACK_IMPORTED_MODULE_0___default()('meta[name="csrf-token"]').attr("content")
+      }
+    }).done(function (res) {
+      if (res.status === 200) {
+        jQuery__WEBPACK_IMPORTED_MODULE_0___default()(".update-book-form #title").val(res.book.title);
+        jQuery__WEBPACK_IMPORTED_MODULE_0___default()(".update-book-form #slug").val(res.book.slug);
+        jQuery__WEBPACK_IMPORTED_MODULE_0___default()(".update-book-form #pages").val(res.book.pages);
+        jQuery__WEBPACK_IMPORTED_MODULE_0___default()(".update-book-form #publish_year").val(res.book.publish_year);
+        jQuery__WEBPACK_IMPORTED_MODULE_0___default()(".update-book-form #publisher").val(res.book.publisher_id);
+        jQuery__WEBPACK_IMPORTED_MODULE_0___default()(".update-book-form #author").val(res.book.author_id);
+      }
+    }).fail(function (res) {
+      console.log(res);
+    });
+    /* Submit update book form */
+
+    jQuery__WEBPACK_IMPORTED_MODULE_0___default()(".update-book-form").on("submit", function (e) {
+      e.preventDefault();
+      var fd = new FormData(this);
+      fd.append("cover", jQuery__WEBPACK_IMPORTED_MODULE_0___default()(".update-book-form #cover")[0].files[0]);
+      fd.append("title", jQuery__WEBPACK_IMPORTED_MODULE_0___default()(".update-book-form #title").val());
+      fd.append("author", jQuery__WEBPACK_IMPORTED_MODULE_0___default()(".update-book-form #author").val());
+      fd.append("publisher", jQuery__WEBPACK_IMPORTED_MODULE_0___default()(".update-book-form #publisher").val());
+      fd.append("pages", jQuery__WEBPACK_IMPORTED_MODULE_0___default()(".update-book-form #pages").val());
+      fd.append("publish_year", jQuery__WEBPACK_IMPORTED_MODULE_0___default()(".update-book-form #publish_year").val());
+      fd.append("slug", jQuery__WEBPACK_IMPORTED_MODULE_0___default()(".update-book-form #slug").val());
+      jQuery__WEBPACK_IMPORTED_MODULE_0___default().ajax({
+        url: "/dashboard/books/".concat(slug),
+        method: "POST",
+        data: fd,
+        contentType: false,
+        processData: false,
+        headers: {
+          "X-CSRF-TOKEN": jQuery__WEBPACK_IMPORTED_MODULE_0___default()('meta[name="csrf-token"]').attr("content")
+        }
+      }).done(function (res) {
+        if (res.status === 200) {
+          jQuery__WEBPACK_IMPORTED_MODULE_0___default()(".modal").addClass("hidden");
+          jQuery__WEBPACK_IMPORTED_MODULE_0___default()(".btn-create-book").before("\n                        <div class=\"alert bg-green-100 text-green-600 font-bold px-4 py-2 mb-4\">\n                            ".concat(res.message, "\n                        </div>\n                        "));
+          jQuery__WEBPACK_IMPORTED_MODULE_0___default()(".form")[0].reset();
+          setTimeout(function () {
+            jQuery__WEBPACK_IMPORTED_MODULE_0___default()(".alert").remove();
+          }, 3000);
+        }
+      }).fail(function (res) {
+        console.log(res.responseText);
+
+        if (res.status === 422) {
+          jQuery__WEBPACK_IMPORTED_MODULE_0___default()("small.text-red-600").remove();
+          jQuery__WEBPACK_IMPORTED_MODULE_0___default()("input.border-red-500").removeClass("border-red-500");
+          var errors = res.responseJSON.errors;
+
+          var _loop2 = function _loop2(error) {
+            errors[error].forEach(function (message) {
+              jQuery__WEBPACK_IMPORTED_MODULE_0___default()("input[name=".concat(error, "]")).addClass("border-red-500");
+              jQuery__WEBPACK_IMPORTED_MODULE_0___default()("input[name=".concat(error, "]")).after("<small class=\"text-red-600\">".concat(message, "</small>"));
+            });
+          };
+
+          for (var error in errors) {
+            _loop2(error);
+          }
+        }
+      });
     });
   });
 });

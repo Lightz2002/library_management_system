@@ -28,8 +28,8 @@ class BookSeeder extends Seeder
 
         Book::create([
             'title' => 'Sistem Informasi Manajemen',
-            'slug' => 'book-images/sistem_informasi',
-            'cover' => 'si.jpg',
+            'slug' => 'sistem_informasi',
+            'cover' => 'book-images/si.jpg',
             'pages' => 412,
             'publish_year' => '2015',
             'author_id' => '1',
