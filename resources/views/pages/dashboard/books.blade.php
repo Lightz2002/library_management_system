@@ -2,7 +2,9 @@
 
 @extends('layouts.admin')
 
+@section('search')
 
+@endsection
 
 @section('content')
     <button class="btn-create-book inline-block py-2 rounded-md px-4 mb-5 text-white bg-blue-600 hover:bg-blue-700">

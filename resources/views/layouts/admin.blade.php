@@ -26,8 +26,10 @@
                             {{ $title }}
                         </h1>
 
-                        @yield('search')
-
+                        @if ( !str_contains($title, 'Dashboard') )                            
+                            @include('partials.searchbar') 
+                        @endif
+                        
                     </div>
 
                     <div class="content-body w-full">

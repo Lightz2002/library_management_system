@@ -41,7 +41,7 @@ Route::get('/register', [RegisterController::class, 'index'])->middleware('guest
 Route::post('/register', [RegisterController::class, 'store']);
 
 /* Dashboard */
-Route::middleware(['auth'])->group(function () {
+Route::middleware(['admin'])->group(function () {
 
     Route::get('/dashboard', function () {
         return view('pages.dashboard.index', [
@@ -54,7 +54,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('dashboard/books/{book:slug}', [DashboardBookController::class, 'update']);
 
     Route::get('/dashboard/authors', function () {
-        return view('pages.user.authors', [
+        return view('pages.dashboard.authors', [
             'title' => 'Authors',
             'authors' => Author::all()
         ]);

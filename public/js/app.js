@@ -2082,8 +2082,13 @@ jQuery__WEBPACK_IMPORTED_MODULE_0___default().when((jQuery__WEBPACK_IMPORTED_MOD
   function closeModal(cl) {
     jQuery__WEBPACK_IMPORTED_MODULE_0___default()(cl).addClass("hidden");
   }
-  /* Generate Slug */
+  /* Nav Dropdown */
 
+
+  jQuery__WEBPACK_IMPORTED_MODULE_0___default()(".nav-dropdown").on("click", function (e) {
+    jQuery__WEBPACK_IMPORTED_MODULE_0___default()(".dropdown-item").toggleClass("hidden");
+  });
+  /* Generate Slug */
 
   jQuery__WEBPACK_IMPORTED_MODULE_0___default()("#title").on("change", function () {
     fetch("/dashboard/books/createSlug?title=" + jQuery__WEBPACK_IMPORTED_MODULE_0___default()("#title").val()).then(function (res) {

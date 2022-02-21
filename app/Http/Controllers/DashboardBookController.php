@@ -19,12 +19,28 @@ class DashboardBookController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        $title = 'All Books ';
+        $inputAuthor = $request->input('author');
+        $inputPublisher = $request->input('publisher');
+
+
+        if ($inputAuthor) {
+            $author = Author::firstWhere('slug', $inputAuthor);
+            if ($author->count()) {
+                $title .= "By $author->firstname";
+            }
+        } else if ($inputPublisher) {
+            $publisher = Publisher::firstWhere('slug', $inputPublisher);
+            if ($publisher->count()) {
+                $title .= "By $publisher->name";
+            }
+        }
+
         return view('pages.dashboard.books', [
-            'title' => 'Books',
-            'books' => Book::with('publisher')->paginate(2)
+            'title' => $title,
+            'books' => Book::with('publisher')->filter($request->input())->paginate(2)
         ]);
     }
 

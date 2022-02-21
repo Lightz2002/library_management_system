@@ -11,6 +11,11 @@ $.when($.ready).then(function () {
         $(cl).addClass("hidden");
     }
 
+    /* Nav Dropdown */
+    $(".nav-dropdown").on("click", function (e) {
+        $(".dropdown-item").toggleClass("hidden");
+    });
+
     /* Generate Slug */
     $("#title").on("change", function () {
         fetch("/dashboard/books/createSlug?title=" + $("#title").val())

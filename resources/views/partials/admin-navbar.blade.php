@@ -17,14 +17,19 @@
 
     <div class="navbar ml-auto flex items-center">
         @auth
-            <p class="mr-5">Welcome, {{ auth()->user()->name }}</p>
-            <form action="/logout" method="POST">
-                @csrf
-                <button type="submit" class="w-32 flex items-center justify-evenly bg-red-600 py-2 px-3 text-white">
-                    <i class="fi fi-rr-sign-out-alt"></i>
-                    <p>Logout</p>
-                </button>
-            </form>
+            <div class="mr-5 nav-dropdown hover:cursor-pointer hover:bg-gray-500 hover:text-white flex flex-col items-center  text-center relative border border-gray-400">
+                <p class=" hover:pointer-events-none p-2  after:content-['V'] after:ml-2">Welcome, {{ auth()->user()->name }}</p>
+
+                <div class="hidden dropdown-item absolute -bottom-20  w-full">
+                    <a href="/" class="w-full inline-block py-2 hover:bg-blue-200 bg-blue-100 text-blue-600">Home</a>
+                    <form action="/logout" method="POST" class="w-full">
+                        @csrf
+                        <button type="submit" class="flex items-center justify-evenly btn-logout left-0 w-full hover:bg-red-200 bg-red-100 text-red-900  py-2 px-3 ">
+                            <p>Logout</p>
+                        </button>
+                    </form>
+                </div>
+            </div>
         @else
             
             <a href="/login">

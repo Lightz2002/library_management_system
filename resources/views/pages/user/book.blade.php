@@ -3,7 +3,7 @@
 @section('content')
             <div class="flex w-4/5 m-auto card py-5 rounded-2xl shadow-slate-400 bg-white px-4">
                 <div class="card-img w-1/5 h-40 mb-3">
-                   <img src="/image/{{ $book->cover }}" alt="" class="w-full h-full object-center object-contain">
+                   <img src="/storage/{{ $book->cover }}" alt="" class="w-full h-full object-center object-contain">
                 </div>
                 <div class="card-body flex flex-col justify-evenly">
                     <div class="main-desc">
